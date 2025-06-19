@@ -1,4 +1,4 @@
-# AI Music Profanity Remover
+# BusinessClassProfile
 
 A Flutter application built with Clean Architecture, BLoC pattern, and modern development practices.
 
