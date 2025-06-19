@@ -5,6 +5,7 @@ import '../features/settings/presentation/pages/settings_page.dart';
 import '../features/auth/presentation/pages/sign_in_page.dart';
 import '../features/auth/presentation/pages/sign_up_page.dart';
 import '../features/auth/presentation/pages/email_verification_page.dart';
+import '../features/debug/network_test_page.dart';
 
 class AppRoutes {
   static const String home = '/';
@@ -12,6 +13,7 @@ class AppRoutes {
   static const String signIn = '/signin';
   static const String signUp = '/signup';
   static const String emailVerification = '/email-verification';
+  static const String networkTest = '/network-test';
 }
 
 final GoRouter appRouter = GoRouter(
@@ -44,6 +46,11 @@ final GoRouter appRouter = GoRouter(
         final email = state.uri.queryParameters['email'] ?? '';
         return EmailVerificationPage(email: email);
       },
+    ),
+    GoRoute(
+      path: AppRoutes.networkTest,
+      name: 'network-test',
+      builder: (context, state) => const NetworkTestPage(),
     ),
   ],
   errorBuilder: (context, state) => Scaffold(

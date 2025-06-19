@@ -45,6 +45,7 @@ dev_dependencies:
   build_runner: ^2.4.15
   injectable_generator: ^2.7.0
   json_serializable: ^6.9.5
+  mocktail: ^1.0.4
 
 
 # The following section is specific to Flutter packages.

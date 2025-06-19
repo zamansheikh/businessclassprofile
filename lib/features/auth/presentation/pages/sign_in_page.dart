@@ -189,7 +189,31 @@ class _SignInPageState extends State<SignInPage> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 24),
+
+                  // Network Test Button (Debug)
+                  OutlinedButton(
+                    onPressed: () => context.go('/network-test'),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      side: BorderSide(color: Colors.orange.shade300),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.network_check,
+                          color: Colors.orange.shade600,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Test Network Connection',
+                          style: TextStyle(color: Colors.orange.shade600),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
 
                   // Sign Up Link
                   Row(
