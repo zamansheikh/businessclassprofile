@@ -32,6 +32,9 @@ dependencies:
   # Storage
   shared_preferences: ^2.5.3
   
+  # Image Picker
+  image_picker: ^1.0.4
+  
   # Utils
   dartz: ^0.10.1
 

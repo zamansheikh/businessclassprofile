@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import 'class_selection_modal.dart';
+import '../bloc/post_bloc.dart';
+import '../bloc/post_event.dart';
+import '../bloc/post_state.dart';
 
 class ShareExperienceModal extends StatefulWidget {
   const ShareExperienceModal({super.key});
@@ -16,6 +22,9 @@ class _ShareExperienceModalState extends State<ShareExperienceModal> {
   DateTime? selectedTravelDate;
   double rating = 0;
   final TextEditingController _descriptionController = TextEditingController();
+  final List<File> _selectedImages = [];
+  final ImagePicker _picker = ImagePicker();
+  bool _isSubmitting = false;
 
   final List<String> airports = [
     'JFK - John F. Kennedy International Airport',
@@ -126,41 +135,104 @@ class _ShareExperienceModalState extends State<ShareExperienceModal> {
       ),
     );
   }
-
   Widget _buildImageUploadSection() {
-    return Container(
-      height: 120,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.grey[300]!,
-          style: BorderStyle.solid,
-          width: 2,
-        ),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.file_upload_outlined, size: 32, color: Colors.grey[600]),
-          const SizedBox(height: 8),
-          RichText(
-            text: TextSpan(
-              text: 'Drag and drop your files here, or ',
-              style: TextStyle(color: Colors.grey[600], fontSize: 14),
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: _pickImages,
+          child: Container(
+            height: 120,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.grey[300]!,
+                style: BorderStyle.solid,
+                width: 2,
+              ),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextSpan(
-                  text: 'browse',
-                  style: TextStyle(
-                    color: Colors.blue[600],
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
+                Icon(Icons.file_upload_outlined, size: 32, color: Colors.grey[600]),
+                const SizedBox(height: 8),
+                RichText(
+                  text: TextSpan(
+                    text: 'Drag and drop your files here, or ',
+                    style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                    children: [
+                      TextSpan(
+                        text: 'browse',
+                        style: TextStyle(
+                          color: Colors.blue[600],
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
+        ),
+        if (_selectedImages.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          _buildSelectedImages(),
         ],
+      ],
+    );
+  }
+
+  Widget _buildSelectedImages() {
+    return Container(
+      height: 100,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: _selectedImages.length,
+        itemBuilder: (context, index) {
+          return Container(
+            width: 100,
+            height: 100,
+            margin: const EdgeInsets.only(right: 8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.grey[300]!),
+            ),
+            child: Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.file(
+                    _selectedImages[index],
+                    width: 100,
+                    height: 100,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Positioned(
+                  top: 4,
+                  right: 4,
+                  child: GestureDetector(
+                    onTap: () => _removeImage(index),
+                    child: Container(
+                      padding: const EdgeInsets.all(2),
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 16,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
@@ -365,6 +437,139 @@ class _ShareExperienceModalState extends State<ShareExperienceModal> {
         ),
       ),
     );
+  }
+
+  Future<void> _pickImages() async {
+    try {
+      final List<XFile> images = await _picker.pickMultiImage();
+      if (images.isNotEmpty) {
+        setState(() {
+          _selectedImages.clear();
+          _selectedImages.addAll(images.map((xFile) => File(xFile.path)));
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error picking images: $e')),
+      );
+    }
+  }
+
+  void _removeImage(int index) {
+    setState(() {
+      _selectedImages.removeAt(index);
+    });
+  }
+
+  Future<void> _submitShareExperience() async {
+    if (!_validateForm()) return;
+
+    setState(() {
+      _isSubmitting = true;
+    });
+
+    try {
+      // Parse departure airport
+      final departureParts = selectedDepartureAirport!.split(' - ');
+      final departureIata = departureParts[0];
+      final departureInfo = _getAirportInfo(selectedDepartureAirport!);
+
+      // Parse arrival airport
+      final arrivalParts = selectedArrivalAirport!.split(' - ');
+      final arrivalIata = arrivalParts[0];
+      final arrivalInfo = _getAirportInfo(selectedArrivalAirport!);
+
+      // Parse airline
+      final airlineInfo = _getAirlineInfo(selectedAirline!);
+
+      context.read<PostBloc>().add(ShareExperience(
+        departure: departureInfo,
+        arrival: arrivalInfo,
+        airline: airlineInfo,
+        classType: selectedClass!,
+        rating: rating,
+        shareDate: selectedTravelDate!,
+        description: _descriptionController.text.trim(),
+        authorId: "685391a607a87fb45ddc4a5a", // Placeholder - replace with actual user ID
+        imagePaths: _selectedImages.isNotEmpty 
+            ? _selectedImages.map((file) => file.path).toList() 
+            : null,
+      ));
+
+      Navigator.of(context).pop();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error sharing experience: $e')),
+      );
+    } finally {
+      setState(() {
+        _isSubmitting = false;
+      });
+    }
+  }
+
+  bool _validateForm() {
+    if (selectedDepartureAirport == null) {
+      _showValidationError('Please select departure airport');
+      return false;
+    }
+    if (selectedArrivalAirport == null) {
+      _showValidationError('Please select arrival airport');
+      return false;
+    }
+    if (selectedAirline == null) {
+      _showValidationError('Please select airline');
+      return false;
+    }
+    if (selectedClass == null) {
+      _showValidationError('Please select class');
+      return false;
+    }
+    if (selectedTravelDate == null) {
+      _showValidationError('Please select travel date');
+      return false;
+    }
+    if (rating == 0) {
+      _showValidationError('Please provide a rating');
+      return false;
+    }
+    if (_descriptionController.text.trim().isEmpty) {
+      _showValidationError('Please enter a description');
+      return false;
+    }
+    return true;
+  }
+
+  void _showValidationError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
+  Map<String, dynamic> _getAirportInfo(String airportString) {
+    // Extract airport code and name from the string format: "JFK - John F. Kennedy International Airport"
+    final parts = airportString.split(' - ');
+    final iata = parts[0];
+    final name = parts.length > 1 ? parts[1] : iata;
+    
+    // For now, using mock data for city and country
+    // In a real app, you'd have a proper airport database
+    return {
+      "city": "New York", // This should be dynamic based on actual airport data
+      "country": "United States",
+      "iata": iata,
+      "airport_name": name,
+    };
+  }
+
+  Map<String, dynamic> _getAirlineInfo(String airlineName) {
+    // For now, using mock data
+    // In a real app, you'd have a proper airline database
+    return {
+      "name": airlineName,
+      "code": "XX", // This should be the actual airline code
+      "country": "Unknown",
+    };
   }
 
   @override
