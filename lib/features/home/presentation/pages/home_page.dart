@@ -55,6 +55,21 @@ class _HomeViewState extends State<HomeView> {
     }
   }
 
+  // Placeholder current user ID - in a real app, this would come from authentication state
+  static const String _currentUserId = "685391a607a87fb45ddc4a5a";
+
+  bool _canDeletePost(ReviewPost post) {
+    // Check if the current user is the author of the post
+    // In a real app, you'd get the current user ID from the auth state
+    return post.authorInfo?.id == _currentUserId;
+  }
+
+  void _deletePost(BuildContext context, ReviewPost post) {
+    context.read<PostBloc>().add(
+      DeletePost(postId: post.id, postType: post.type),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,6 +87,14 @@ class _HomeViewState extends State<HomeView> {
                 context,
               ).showSnackBar(SnackBar(content: Text(state.message)));
             } else if (state is PostSubmissionError) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.message),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            } else if (state is PostError) {
+              // Handle delete errors and other general errors
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(state.message),
@@ -133,6 +156,8 @@ class _HomeViewState extends State<HomeView> {
                             onLike: () {},
                             onShare: () {},
                             onComment: () {},
+                            canDelete: _canDeletePost(post),
+                            onDelete: () => _deletePost(context, post),
                           ),
                           const SizedBox(height: 16),
                         ],
