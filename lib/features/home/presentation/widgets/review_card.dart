@@ -7,6 +7,8 @@ class ReviewCard extends StatefulWidget {
   final VoidCallback onLike;
   final VoidCallback onShare;
   final VoidCallback onComment;
+  final VoidCallback? onDelete;
+  final bool canDelete;
 
   const ReviewCard({
     super.key,
@@ -15,6 +17,8 @@ class ReviewCard extends StatefulWidget {
     required this.onLike,
     required this.onShare,
     required this.onComment,
+    this.onDelete,
+    this.canDelete = false,
   });
 
   @override
@@ -109,6 +113,29 @@ class _ReviewCardState extends State<ReviewCard> {
             widget.review.rating.toString(),
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
           ),
+          if (widget.canDelete) ...[
+            const SizedBox(width: 8),
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.more_vert, color: Colors.grey, size: 20),
+              onSelected: (value) {
+                if (value == 'delete') {
+                  _showDeleteConfirmation();
+                }
+              },
+              itemBuilder: (BuildContext context) => [
+                const PopupMenuItem<String>(
+                  value: 'delete',
+                  child: Row(
+                    children: [
+                      Icon(Icons.delete_outline, color: Colors.red, size: 18),
+                      SizedBox(width: 8),
+                      Text('Delete', style: TextStyle(color: Colors.red)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
         ],
       ),
     );
@@ -630,6 +657,35 @@ class _ReviewCardState extends State<ReviewCard> {
           ),
         ],
       ),
+    );
+  }
+
+  void _showDeleteConfirmation() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete Post'),
+          content: const Text(
+            'Are you sure you want to delete this post? This action cannot be undone.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                if (widget.onDelete != null) {
+                  widget.onDelete!();
+                }
+              },
+              child: Text('Delete', style: TextStyle(color: Colors.red[600])),
+            ),
+          ],
+        );
+      },
     );
   }
 }

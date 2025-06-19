@@ -12,6 +12,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     on<LoadMorePosts>(_onLoadMorePosts);
     on<SubmitQuestion>(_onSubmitQuestion);
     on<ShareExperience>(_onShareExperience);
+    on<DeletePost>(_onDeletePost);
   }
 
   Future<void> _onLoadPosts(LoadPosts event, Emitter<PostState> emit) async {
@@ -136,6 +137,33 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       add(RefreshPosts());
     } catch (e) {
       emit(PostSubmissionError(message: e.toString()));
+    }
+  }
+
+  Future<void> _onDeletePost(DeletePost event, Emitter<PostState> emit) async {
+    try {
+      await _postRepository.deletePost(
+        postId: event.postId,
+        postType: event.postType,
+      );
+
+      // Remove the post from current state if it exists
+      final currentState = state;
+      if (currentState is PostLoaded) {
+        final updatedPosts = currentState.posts
+            .where((post) => post.id != event.postId)
+            .toList();
+
+        emit(
+          PostLoaded(
+            posts: updatedPosts,
+            hasMore: currentState.hasMore,
+            currentSkip: currentState.currentSkip - 1,
+          ),
+        );
+      }
+    } catch (e) {
+      emit(PostError(message: 'Failed to delete post: $e'));
     }
   }
 }

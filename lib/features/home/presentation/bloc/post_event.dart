@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import '../../data/models/review_models.dart';
 
 abstract class PostEvent extends Equatable {
   const PostEvent();
@@ -73,4 +72,14 @@ class ShareExperience extends PostEvent {
     authorId,
     imagePaths,
   ];
+}
+
+class DeletePost extends PostEvent {
+  final String postId;
+  final String postType; // 'ask' or 'share'
+
+  const DeletePost({required this.postId, required this.postType});
+
+  @override
+  List<Object?> get props => [postId, postType];
 }

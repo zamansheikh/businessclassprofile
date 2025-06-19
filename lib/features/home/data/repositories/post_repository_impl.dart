@@ -83,4 +83,16 @@ class PostRepositoryImpl implements PostRepository {
       throw Exception('Failed to share experience: $e');
     }
   }
+
+  @override
+  Future<void> deletePost({
+    required String postId,
+    required String postType,
+  }) async {
+    try {
+      await _apiService.deletePost(postId: postId, postType: postType);
+    } catch (e) {
+      throw Exception('Failed to delete post: $e');
+    }
+  }
 }

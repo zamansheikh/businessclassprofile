@@ -24,4 +24,6 @@ abstract class PostRepository {
     required String authorId,
     required List<String>? imagePaths,
   });
+
+  Future<void> deletePost({required String postId, required String postType});
 }

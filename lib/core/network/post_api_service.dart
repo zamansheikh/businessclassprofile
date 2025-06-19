@@ -169,4 +169,35 @@ class PostApiService {
       throw Exception('Error sharing experience: $e');
     }
   }
+
+  Future<Map<String, dynamic>> deletePost({
+    required String postId,
+    required String postType, // 'ask' or 'share'
+  }) async {
+    try {
+      final token = await _getStoredToken();
+      if (token == null) {
+        throw Exception('No authentication token found');
+      }
+
+      final response = await _dio.delete(
+        '$baseUrl/delete_post/',
+        queryParameters: {'id': postId, 'type': postType},
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Accept': 'application/json',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        throw Exception('Failed to delete post: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error deleting post: $e');
+    }
+  }
 }
