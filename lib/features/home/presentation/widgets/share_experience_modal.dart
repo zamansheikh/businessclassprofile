@@ -178,6 +178,7 @@ class _ShareExperienceModalState extends State<ShareExperienceModal> {
       ),
       child: DropdownButtonFormField<String>(
         value: selectedValue,
+        isExpanded: true,
         decoration: InputDecoration(
           hintText: label,
           hintStyle: TextStyle(color: Colors.grey[500]),
@@ -188,7 +189,10 @@ class _ShareExperienceModalState extends State<ShareExperienceModal> {
           ),
         ),
         items: items.map((String item) {
-          return DropdownMenuItem<String>(value: item, child: Text(item));
+          return DropdownMenuItem<String>(
+            value: item,
+            child: Text(item, overflow: TextOverflow.ellipsis, maxLines: 1),
+          );
         }).toList(),
         onChanged: onChanged,
         icon: const Icon(Icons.keyboard_arrow_down),
