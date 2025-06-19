@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class AirlineBanner extends StatelessWidget {
   const AirlineBanner({super.key});
@@ -31,12 +32,19 @@ class AirlineBanner extends StatelessWidget {
               top: 0,
               child: Opacity(
                 opacity: 0.3,
-                child: Image.network(
-                  'https://media.istockphoto.com/id/155150766/photo/passenger-jet-airplane-flying-above-clouds.jpg?s=612x612&w=0&k=20&c=DjBqo2rZeQvU-NkC1xRdznpXgcAljXEll3T7SdUFINE=', // Placeholder for airplane image
+                child: CachedNetworkImage(
+                  imageUrl:
+                      'https://media.istockphoto.com/id/155150766/photo/passenger-jet-airplane-flying-above-clouds.jpg?s=612x612&w=0&k=20&c=DjBqo2rZeQvU-NkC1xRdznpXgcAljXEll3T7SdUFINE=', // Placeholder for airplane image
                   width: 300,
                   height: 200,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
+                  placeholder: (context, url) => Container(
+                    color: Colors.grey[200],
+                    child: const Center(
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) {
                     return const Icon(
                       Icons.airplanemode_active,
                       size: 80,

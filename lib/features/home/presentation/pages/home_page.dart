@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../routing/app_router.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_event.dart';
@@ -238,7 +239,9 @@ class _HomeViewState extends State<HomeView> {
             shape: BoxShape.circle,
             border: Border.all(color: Colors.grey[300]!),
             image: const DecorationImage(
-              image: NetworkImage('https://thispersondoesnotexist.com/'),
+              image: CachedNetworkImageProvider(
+                'https://thispersondoesnotexist.com/',
+              ),
               fit: BoxFit.cover,
             ),
           ),

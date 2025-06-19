@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'core/theme/app_theme.dart';
 import 'injection/injection.dart';
 import 'routing/app_router.dart';
@@ -76,7 +75,8 @@ class ErrorApp extends StatelessWidget {
                 child: const Text('Retry'),
               ),
             ],
-          ),        ),
+          ),
+        ),
       ),
     );
   }

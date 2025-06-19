@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../data/models/review_models.dart';
 
 class ReviewCard extends StatefulWidget {
@@ -71,8 +72,9 @@ class _ReviewCardState extends State<ReviewCard> {
         children: [
           CircleAvatar(
             radius: 20,
-            backgroundImage: NetworkImage(widget.review.authorAvatar),
-            onBackgroundImageError: (exception, stackTrace) {},
+            backgroundImage: widget.review.authorAvatar.isNotEmpty
+                ? CachedNetworkImageProvider(widget.review.authorAvatar)
+                : null,
             child: widget.review.authorAvatar.isEmpty
                 ? const Icon(Icons.person, color: Colors.white)
                 : null,
@@ -276,12 +278,16 @@ class _ReviewCardState extends State<ReviewCard> {
   }
 
   Widget _buildSingleImage(String imageUrl) {
-    return Image.network(
-      imageUrl,
+    return CachedNetworkImage(
+      imageUrl: imageUrl,
       width: double.infinity,
       height: double.infinity,
       fit: BoxFit.cover,
-      errorBuilder: (context, error, stackTrace) {
+      placeholder: (context, url) => Container(
+        color: Colors.grey[100],
+        child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+      ),
+      errorWidget: (context, url, error) {
         return Container(
           color: Colors.grey[300],
           child: const Center(
@@ -421,8 +427,9 @@ class _ReviewCardState extends State<ReviewCard> {
         children: [
           CircleAvatar(
             radius: 18,
-            backgroundImage: NetworkImage(comment.authorAvatar),
-            onBackgroundImageError: (exception, stackTrace) {},
+            backgroundImage: comment.authorAvatar.isNotEmpty
+                ? CachedNetworkImageProvider(comment.authorAvatar)
+                : null,
             child: comment.authorAvatar.isEmpty
                 ? const Icon(Icons.person, size: 18, color: Colors.white)
                 : null,
@@ -620,9 +627,9 @@ class _ReviewCardState extends State<ReviewCard> {
       margin: const EdgeInsets.only(top: 8),
       child: Row(
         children: [
-          const CircleAvatar(
+          CircleAvatar(
             radius: 18,
-            backgroundImage: NetworkImage(
+            backgroundImage: CachedNetworkImageProvider(
               'https://thispersondoesnotexist.com/',
             ),
           ),
