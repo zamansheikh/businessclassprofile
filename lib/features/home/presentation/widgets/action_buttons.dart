@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'share_experience_modal.dart';
+import 'ask_question_modal.dart';
 
 class ActionButtons extends StatelessWidget {
   const ActionButtons({super.key});
@@ -14,11 +16,9 @@ class ActionButtons extends StatelessWidget {
               text: 'Share Your Experience',
               icon: Icons.rate_review_outlined,
               onTap: () {
-                // Handle share experience
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Share Experience feature coming soon!'),
-                  ),
+                showDialog(
+                  context: context,
+                  builder: (context) => const ShareExperienceModal(),
                 );
               },
             ),
@@ -29,11 +29,9 @@ class ActionButtons extends StatelessWidget {
               text: 'Ask A Question',
               icon: Icons.help_outline,
               onTap: () {
-                // Handle ask question
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Ask Question feature coming soon!'),
-                  ),
+                showDialog(
+                  context: context,
+                  builder: (context) => const AskQuestionModal(),
                 );
               },
             ),
