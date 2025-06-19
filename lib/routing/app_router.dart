@@ -5,9 +5,11 @@ import '../features/settings/presentation/pages/settings_page.dart';
 import '../features/auth/presentation/pages/sign_in_page.dart';
 import '../features/auth/presentation/pages/sign_up_page.dart';
 import '../features/auth/presentation/pages/email_verification_page.dart';
+import '../features/auth/presentation/pages/splash_page.dart';
 import '../features/debug/network_test_page.dart';
 
 class AppRoutes {
+  static const String splash = '/splash';
   static const String home = '/';
   static const String settings = '/settings';
   static const String signIn = '/signin';
@@ -17,8 +19,13 @@ class AppRoutes {
 }
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: AppRoutes.signIn,
+  initialLocation: AppRoutes.splash,
   routes: [
+    GoRoute(
+      path: AppRoutes.splash,
+      name: 'splash',
+      builder: (context, state) => const SplashPage(),
+    ),
     GoRoute(
       path: AppRoutes.home,
       name: 'home',

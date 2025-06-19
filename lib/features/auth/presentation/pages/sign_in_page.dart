@@ -41,8 +41,7 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocListener<AuthBloc, AuthState>(
+    return Scaffold(      body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthError) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -51,8 +50,10 @@ class _SignInPageState extends State<SignInPage> {
                 backgroundColor: Colors.red,
               ),
             );
+          } else if (state is AuthAuthenticated) {
+            // Redirect to home page after successful authentication
+            context.go('/');
           }
-          // Note: No need to handle AuthAuthenticated here since AuthWrapper will handle navigation
         },
         child: SafeArea(
           child: SingleChildScrollView(
