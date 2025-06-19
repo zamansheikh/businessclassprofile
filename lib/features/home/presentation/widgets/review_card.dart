@@ -117,32 +117,35 @@ class _ReviewCardState extends State<ReviewCard> {
   Widget _buildFlightInfo() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        children: [
-          _buildInfoChip(
-            widget.review.route,
-            Colors.blue[50]!,
-            Colors.blue[700]!,
-          ),
-          const SizedBox(width: 8),
-          _buildInfoChip(
-            widget.review.airline,
-            Colors.green[50]!,
-            Colors.green[700]!,
-          ),
-          const SizedBox(width: 8),
-          _buildInfoChip(
-            widget.review.flightClass,
-            Colors.purple[50]!,
-            Colors.purple[700]!,
-          ),
-          const SizedBox(width: 8),
-          _buildInfoChip(
-            widget.review.travelMonth,
-            Colors.orange[50]!,
-            Colors.orange[700]!,
-          ),
-        ],
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            _buildInfoChip(
+              widget.review.route,
+              Colors.blue[50]!,
+              Colors.blue[700]!,
+            ),
+            const SizedBox(width: 8),
+            _buildInfoChip(
+              widget.review.airline,
+              Colors.green[50]!,
+              Colors.green[700]!,
+            ),
+            const SizedBox(width: 8),
+            _buildInfoChip(
+              widget.review.flightClass,
+              Colors.purple[50]!,
+              Colors.purple[700]!,
+            ),
+            const SizedBox(width: 8),
+            _buildInfoChip(
+              widget.review.travelMonth,
+              Colors.orange[50]!,
+              Colors.orange[700]!,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -180,25 +183,85 @@ class _ReviewCardState extends State<ReviewCard> {
   }
 
   Widget _buildImages() {
+    final imageCount = widget.review.images.length;
+
+    if (imageCount == 0) return const SizedBox.shrink();
+
     return Container(
       height: 200,
       margin: const EdgeInsets.symmetric(horizontal: 16),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
-        child: Image.network(
-          widget.review.images.first,
-          width: double.infinity,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            return Container(
-              color: Colors.grey[300],
-              child: const Center(
-                child: Icon(Icons.image, size: 50, color: Colors.grey),
-              ),
-            );
-          },
-        ),
+        child: _buildImageGrid(imageCount),
       ),
+    );
+  }
+
+  Widget _buildImageGrid(int imageCount) {
+    if (imageCount == 1) {
+      return _buildSingleImage(widget.review.images.first);
+    } else if (imageCount == 2) {
+      return Row(
+        children: [
+          Expanded(child: _buildSingleImage(widget.review.images[0])),
+          const SizedBox(width: 2),
+          Expanded(child: _buildSingleImage(widget.review.images[1])),
+        ],
+      );
+    } else {
+      // For 3 or more images
+      return Row(
+        children: [
+          Expanded(child: _buildSingleImage(widget.review.images[0])),
+          const SizedBox(width: 2),
+          Expanded(
+            child: Column(
+              children: [
+                Expanded(child: _buildSingleImage(widget.review.images[1])),
+                const SizedBox(height: 2),
+                Expanded(
+                  child: Stack(
+                    children: [
+                      _buildSingleImage(widget.review.images[2]),
+                      if (imageCount > 3)
+                        Container(
+                          color: Colors.black.withOpacity(0.6),
+                          child: Center(
+                            child: Text(
+                              '+${imageCount - 3}',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
+  }
+
+  Widget _buildSingleImage(String imageUrl) {
+    return Image.network(
+      imageUrl,
+      width: double.infinity,
+      height: double.infinity,
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) {
+        return Container(
+          color: Colors.grey[300],
+          child: const Center(
+            child: Icon(Icons.image, size: 30, color: Colors.grey),
+          ),
+        );
+      },
     );
   }
 
@@ -325,96 +388,167 @@ class _ReviewCardState extends State<ReviewCard> {
 
   Widget _buildComment(Comment comment) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: 16),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
-            radius: 15,
+            radius: 18,
             backgroundImage: NetworkImage(comment.authorAvatar),
             onBackgroundImageError: (exception, stackTrace) {},
             child: comment.authorAvatar.isEmpty
-                ? const Icon(Icons.person, size: 16, color: Colors.white)
+                ? const Icon(Icons.person, size: 18, color: Colors.white)
                 : null,
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 12),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      comment.authorName,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey[200]!),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        comment.authorName,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                        ),
                       ),
-                    ),
-                    const Spacer(),
-                    Text(
-                      '${comment.upvotes} Upvotes',
-                      style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  comment.timeAgo,
-                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  comment.content,
-                  style: const TextStyle(fontSize: 14, color: Colors.black87),
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        // Handle upvote
-                      },
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.thumb_up_outlined,
-                            size: 16,
-                            color: Colors.grey[600],
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            'Upvote',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                        ],
+                      const Spacer(),
+                      Text(
+                        comment.timeAgo,
+                        style: TextStyle(fontSize: 12, color: Colors.grey[500]),
                       ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    comment.content,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.black87,
+                      height: 1.3,
                     ),
-                    const SizedBox(width: 16),
-                    GestureDetector(
-                      onTap: () {
-                        // Handle reply
-                      },
-                      child: Row(
-                        children: [
-                          Icon(Icons.reply, size: 16, color: Colors.grey[600]),
-                          const SizedBox(width: 4),
-                          Text(
-                            'Reply',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey[600],
-                            ),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          // Handle upvote
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
                           ),
-                        ],
+                          decoration: BoxDecoration(
+                            color: Colors.grey[50],
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.arrow_upward,
+                                size: 14,
+                                color: Colors.grey[600],
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                '${comment.upvotes}',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey[600],
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                      const SizedBox(width: 12),
+                      GestureDetector(
+                        onTap: () {
+                          // Handle reply
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[50],
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.reply,
+                                size: 14,
+                                color: Colors.grey[600],
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                'Reply',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey[600],
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const Spacer(),
+                      GestureDetector(
+                        onTap: () {
+                          _showReportDialog(comment);
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.red[50],
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.flag_outlined,
+                                size: 14,
+                                color: Colors.red[600],
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                'Report',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.red[600],
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -422,36 +556,80 @@ class _ReviewCardState extends State<ReviewCard> {
     );
   }
 
-  Widget _buildCommentInput() {
-    return Row(
-      children: [
-        const CircleAvatar(
-          radius: 15,
-          backgroundImage: NetworkImage('https://thispersondoesnotexist.com/'),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Colors.grey[300]!),
+  void _showReportDialog(Comment comment) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Report Comment'),
+          content: const Text(
+            'Are you sure you want to report this comment? We will review it and take appropriate action if necessary.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
             ),
-            child: const Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'Write Your Comment',
-                    style: TextStyle(fontSize: 14, color: Colors.grey),
+            TextButton(
+              onPressed: () {
+                // Handle report action
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Comment reported successfully'),
                   ),
-                ),
-                Icon(Icons.send, size: 20, color: Colors.grey),
-              ],
+                );
+              },
+              child: Text('Report', style: TextStyle(color: Colors.red[600])),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildCommentInput() {
+    return Container(
+      margin: const EdgeInsets.only(top: 8),
+      child: Row(
+        children: [
+          const CircleAvatar(
+            radius: 18,
+            backgroundImage: NetworkImage(
+              'https://thispersondoesnotexist.com/',
             ),
           ),
-        ),
-      ],
+          const SizedBox(width: 12),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(25),
+                border: Border.all(color: Colors.grey[300]!),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  const Expanded(
+                    child: Text(
+                      'Write a comment...',
+                      style: TextStyle(fontSize: 14, color: Colors.grey),
+                    ),
+                  ),
+                  Icon(Icons.send, size: 20, color: Colors.blue[600]),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
