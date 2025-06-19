@@ -20,7 +20,7 @@ dependencies:
   injectable: ^2.5.0
   
   # Navigation
-  go_router: ^15.1.3
+  go_router: ^15.2.3
   
   # HTTP Client
   dio: ^5.8.0+1
@@ -33,10 +33,11 @@ dependencies:
   shared_preferences: ^2.5.3
   
   # Image Picker
-  image_picker: ^1.0.4
+  image_picker: ^1.1.2
   
   # Utils
   dartz: ^0.10.1
+
 
 dev_dependencies:
   flutter_test:
@@ -45,10 +46,13 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   
   # Code Generation
-  build_runner: ^2.4.15
+  build_runner: ^2.5.2
   injectable_generator: ^2.7.0
   json_serializable: ^6.9.5
   mocktail: ^1.0.4
+  # Flutter Launcher Icons
+  flutter_launcher_icons: ^0.14.4
+  rename_app: ^1.6.3
 
 
 # The following section is specific to Flutter packages.
@@ -89,3 +93,9 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/icon.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
