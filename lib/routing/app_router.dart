@@ -17,7 +17,7 @@ class AppRoutes {
 }
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: AppRoutes.signIn,
+  initialLocation: AppRoutes.home,
   routes: [
     GoRoute(
       path: AppRoutes.home,

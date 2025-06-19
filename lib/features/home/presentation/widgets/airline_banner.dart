@@ -24,14 +24,17 @@ class AirlineBanner extends StatelessWidget {
           // Background airplane image
           Positioned(
             left: -20,
-            top: 20,
+            right: -20,
+            bottom: 0,
+            top: 0,
             child: Opacity(
               opacity: 0.3,
               child: Image.network(
-                'https://via.placeholder.com/200x100', // Placeholder for airplane image
-                width: 150,
-                height: 80,
-                fit: BoxFit.contain,
+                'https://media.istockphoto.com/id/155150766/photo/passenger-jet-airplane-flying-above-clouds.jpg?s=612x612&w=0&k=20&c=DjBqo2rZeQvU-NkC1xRdznpXgcAljXEll3T7SdUFINE=', // Placeholder for airplane image
+                width: 300,
+                height: 200,
+
+                fit: BoxFit.fill,
                 errorBuilder: (context, error, stackTrace) {
                   return const Icon(
                     Icons.airplanemode_active,

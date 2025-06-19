@@ -427,7 +427,7 @@ class _ReviewCardState extends State<ReviewCard> {
       children: [
         const CircleAvatar(
           radius: 15,
-          backgroundImage: NetworkImage('https://via.placeholder.com/30'),
+          backgroundImage: NetworkImage('https://thispersondoesnotexist.com/'),
         ),
         const SizedBox(width: 8),
         Expanded(

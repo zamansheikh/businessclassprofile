@@ -32,7 +32,7 @@ class _HomeViewState extends State<HomeView> {
     ReviewPost(
       id: '1',
       authorName: 'Dianne Russell',
-      authorAvatar: 'https://via.placeholder.com/40',
+      authorAvatar: 'https://thispersondoesnotexist.com/',
       timeAgo: '1 day ago',
       rating: 5.0,
       route: 'LHR - DEL',
@@ -41,7 +41,28 @@ class _HomeViewState extends State<HomeView> {
       travelMonth: 'July 2023',
       content:
           'Stay tuned for a smoother, more convenient experience right at your fingertips, a smoother, more convenient a smoother, more convenient other, more convenient experience right at your',
-      images: ['https://via.placeholder.com/300x200'],
+      images: ['https://picsum.photos/300/200?random=1'],
+      likes: 30,
+      comments: 20,
+      isLiked: false,
+    ),
+    ReviewPost(
+      id: '2',
+      authorName: 'Dianne Russell',
+      authorAvatar: '',
+      timeAgo: '1 day ago',
+      rating: 5.0,
+      route: 'LHR - DEL',
+      airline: 'Air India',
+      flightClass: 'Business Class',
+      travelMonth: 'July 2023',
+      content:
+          'Stay tuned for a smoother, more convenient experience right at your fingertips, a smoother, more convenient a smoother, more convenient other, more convenient experience right at your',
+      images: [
+        'https://picsum.photos/200/300?random=1',
+        'https://picsum.photos/200/300?random=2',
+        'https://picsum.photos/200/300?random=3',
+      ],
       likes: 30,
       comments: 20,
       isLiked: false,
@@ -53,7 +74,16 @@ class _HomeViewState extends State<HomeView> {
     Comment(
       id: '1',
       authorName: 'Darron Levesque',
-      authorAvatar: 'https://via.placeholder.com/30',
+      authorAvatar: 'https://thispersondoesnotexist.com/',
+      content:
+          'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis',
+      timeAgo: '3 min ago',
+      upvotes: 5,
+    ),
+    Comment(
+      id: '2',
+      authorName: 'Darron Levesque',
+      authorAvatar: 'https://thispersondoesnotexist.com/',
       content:
           'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis',
       timeAgo: '3 min ago',
@@ -164,7 +194,7 @@ class _HomeViewState extends State<HomeView> {
               shape: BoxShape.circle,
               border: Border.all(color: Colors.grey[300]!),
               image: const DecorationImage(
-                image: NetworkImage('https://via.placeholder.com/40'),
+                image: NetworkImage('https://thispersondoesnotexist.com/'),
                 fit: BoxFit.cover,
               ),
             ),
