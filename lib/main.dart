@@ -36,6 +36,7 @@ class MyApp extends StatelessWidget {
         title: 'Business Class Profile',
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
+        themeMode: ThemeMode.light,
         debugShowCheckedModeBanner: false,
         routerConfig: appRouter,
       ),
