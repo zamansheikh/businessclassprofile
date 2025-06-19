@@ -92,12 +92,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(const AuthLoading());
 
-    final result = await getCurrentUserUseCase();
+    final userResult = await getCurrentUserUseCase();
 
-    result.fold((failure) => emit(const AuthUnauthenticated()), (user) {
+    userResult.fold((failure) => emit(const AuthUnauthenticated()), (
+      user,
+    ) async {
       if (user != null) {
-        // For now, we'll emit with an empty token since we need to get it separately
-        // In a real app, you might want to check token validity
+        // Try to get the token as well - we need to access it through the repository
+        // Since we don't have direct access to the repository here, we'll simplify for now
         emit(AuthAuthenticated(user: user, token: ''));
       } else {
         emit(const AuthUnauthenticated());

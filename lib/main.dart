@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/theme/app_theme.dart';
 import 'injection/injection.dart';
-import 'routing/app_router.dart';
 import 'features/home/presentation/bloc/counter_bloc.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
+import 'features/auth/presentation/bloc/auth_event.dart';
+import 'features/auth/presentation/bloc/auth_state.dart';
+import 'features/auth/presentation/pages/sign_in_page.dart';
+import 'features/home/presentation/pages/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,14 +30,16 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<CounterBloc>(create: (context) => getIt<CounterBloc>()),
-        BlocProvider<AuthBloc>(create: (context) => getIt<AuthBloc>()),
+        BlocProvider<AuthBloc>(
+          create: (context) => getIt<AuthBloc>()..add(const CheckAuthStatus()),
+        ),
       ],
-      child: MaterialApp.router(
-        title: 'AI Music Profanity Remover',
+      child: MaterialApp(
+        title: 'Business Class Profile',
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
-        routerConfig: appRouter,
         debugShowCheckedModeBanner: false,
+        home: const AuthWrapper(),
       ),
     );
   }
@@ -75,6 +80,27 @@ class ErrorApp extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class AuthWrapper extends StatelessWidget {
+  const AuthWrapper({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        if (state is AuthLoading) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        } else if (state is AuthAuthenticated) {
+          return const HomePage();
+        } else {
+          return const SignInPage();
+        }
+      },
     );
   }
 }

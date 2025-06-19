@@ -51,9 +51,8 @@ class _SignInPageState extends State<SignInPage> {
                 backgroundColor: Colors.red,
               ),
             );
-          } else if (state is AuthAuthenticated) {
-            context.go('/');
           }
+          // Note: No need to handle AuthAuthenticated here since AuthWrapper will handle navigation
         },
         child: SafeArea(
           child: SingleChildScrollView(

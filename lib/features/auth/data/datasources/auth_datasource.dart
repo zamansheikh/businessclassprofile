@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/errors/exceptions.dart';
@@ -136,7 +137,7 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   @override
   Future<void> saveUser(UserModel user) async {
     final userJson = user.toJson();
-    await sharedPreferences.setString(_userKey, userJson.toString());
+    await sharedPreferences.setString(_userKey, jsonEncode(userJson));
   }
 
   @override
@@ -144,9 +145,8 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
     final userString = sharedPreferences.getString(_userKey);
     if (userString != null) {
       try {
-        // Parse the stored JSON string back to Map and then to UserModel
-        // Note: This is a simplified approach. In production, you'd want to use a proper JSON parser
-        return null; // For now, return null until we implement proper storage
+        final userMap = jsonDecode(userString) as Map<String, dynamic>;
+        return UserModel.fromJson(userMap);
       } catch (e) {
         return null;
       }
