@@ -19,7 +19,8 @@ class _ShareExperienceModalState extends State<ShareExperienceModal> {
   String? selectedArrivalAirport;
   String? selectedAirline;
   String? selectedClass;
-  DateTime? selectedTravelDate;  double rating = 0;
+  DateTime? selectedTravelDate;
+  double rating = 0;
   final TextEditingController _descriptionController = TextEditingController();
   final List<File> _selectedImages = [];
   final ImagePicker _picker = ImagePicker();
@@ -29,56 +30,56 @@ class _ShareExperienceModalState extends State<ShareExperienceModal> {
       'iata': 'CXB',
       'name': 'Cox\'s Bazar Airport',
       'city': 'Cox\'s Bazar',
-      'country': 'Bangladesh'
+      'country': 'Bangladesh',
     },
     {
       'display': 'CGP - Chittagong Airport',
       'iata': 'CGP',
       'name': 'Chittagong Airport',
       'city': 'Chittagong',
-      'country': 'Bangladesh'
+      'country': 'Bangladesh',
     },
     {
       'display': 'JFK - John F. Kennedy International Airport',
       'iata': 'JFK',
       'name': 'John F. Kennedy International Airport',
       'city': 'New York',
-      'country': 'United States'
+      'country': 'United States',
     },
     {
       'display': 'LAX - Los Angeles International Airport',
       'iata': 'LAX',
       'name': 'Los Angeles International Airport',
       'city': 'Los Angeles',
-      'country': 'United States'
+      'country': 'United States',
     },
     {
       'display': 'LHR - London Heathrow Airport',
       'iata': 'LHR',
       'name': 'London Heathrow Airport',
       'city': 'London',
-      'country': 'United Kingdom'
+      'country': 'United Kingdom',
     },
     {
       'display': 'DXB - Dubai International Airport',
       'iata': 'DXB',
       'name': 'Dubai International Airport',
       'city': 'Dubai',
-      'country': 'United Arab Emirates'
+      'country': 'United Arab Emirates',
     },
     {
       'display': 'NRT - Narita International Airport',
       'iata': 'NRT',
       'name': 'Narita International Airport',
       'city': 'Tokyo',
-      'country': 'Japan'
+      'country': 'Japan',
     },
     {
       'display': 'SIN - Singapore Changi Airport',
       'iata': 'SIN',
       'name': 'Singapore Changi Airport',
       'city': 'Singapore',
-      'country': 'Singapore'
+      'country': 'Singapore',
     },
   ];
 
@@ -87,49 +88,49 @@ class _ShareExperienceModalState extends State<ShareExperienceModal> {
       'display': 'Air Bangladesh',
       'name': 'Air Bangladesh',
       'code': 'B9',
-      'country': 'Bangladesh'
+      'country': 'Bangladesh',
     },
     {
       'display': 'Emirates',
       'name': 'Emirates',
       'code': 'EK',
-      'country': 'United Arab Emirates'
+      'country': 'United Arab Emirates',
     },
     {
       'display': 'Singapore Airlines',
       'name': 'Singapore Airlines',
       'code': 'SQ',
-      'country': 'Singapore'
+      'country': 'Singapore',
     },
     {
       'display': 'Qatar Airways',
       'name': 'Qatar Airways',
       'code': 'QR',
-      'country': 'Qatar'
+      'country': 'Qatar',
     },
     {
       'display': 'Lufthansa',
       'name': 'Lufthansa',
       'code': 'LH',
-      'country': 'Germany'
+      'country': 'Germany',
     },
     {
       'display': 'British Airways',
       'name': 'British Airways',
       'code': 'BA',
-      'country': 'United Kingdom'
+      'country': 'United Kingdom',
     },
     {
       'display': 'American Airlines',
       'name': 'American Airlines',
       'code': 'AA',
-      'country': 'United States'
+      'country': 'United States',
     },
     {
       'display': 'Delta Air Lines',
       'name': 'Delta Air Lines',
       'code': 'DL',
-      'country': 'United States'
+      'country': 'United States',
     },
   ];
   @override
@@ -178,7 +179,8 @@ class _ShareExperienceModalState extends State<ShareExperienceModal> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildImageUploadSection(),
-                      const SizedBox(height: 20),                      _buildDropdown(
+                      const SizedBox(height: 20),
+                      _buildDropdown(
                         'Departure Airport',
                         selectedDepartureAirport,
                         airports.map((airport) => airport['display']!).toList(),
@@ -220,6 +222,7 @@ class _ShareExperienceModalState extends State<ShareExperienceModal> {
       ),
     );
   }
+
   Widget _buildImageUploadSection() {
     return Column(
       children: [
@@ -239,7 +242,11 @@ class _ShareExperienceModalState extends State<ShareExperienceModal> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.file_upload_outlined, size: 32, color: Colors.grey[600]),
+                Icon(
+                  Icons.file_upload_outlined,
+                  size: 32,
+                  color: Colors.grey[600],
+                ),
                 const SizedBox(height: 8),
                 RichText(
                   text: TextSpan(
@@ -454,18 +461,19 @@ class _ShareExperienceModalState extends State<ShareExperienceModal> {
       ],
     );
   }
+
   Widget _buildShareButton() {
     return BlocListener<PostBloc, PostState>(
       listener: (context, state) {
         if (state is PostSubmitted) {
           Navigator.of(context).pop();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message)),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.message)));
         } else if (state is PostSubmissionError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message)),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.message)));
         }
       },
       child: SizedBox(
@@ -478,7 +486,9 @@ class _ShareExperienceModalState extends State<ShareExperienceModal> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
               ),
               child: isSubmitting
                   ? const SizedBox(
@@ -555,9 +565,9 @@ class _ShareExperienceModalState extends State<ShareExperienceModal> {
         });
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error picking images: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error picking images: $e')));
     }
   }
 
@@ -565,7 +575,9 @@ class _ShareExperienceModalState extends State<ShareExperienceModal> {
     setState(() {
       _selectedImages.removeAt(index);
     });
-  }  Future<void> _submitShareExperience() async {
+  }
+
+  Future<void> _submitShareExperience() async {
     if (!_validateForm()) return;
 
     try {
@@ -578,23 +590,26 @@ class _ShareExperienceModalState extends State<ShareExperienceModal> {
       // Parse airline
       final airlineInfo = _getAirlineInfo(selectedAirline!);
 
-      context.read<PostBloc>().add(ShareExperience(
-        departure: departureInfo,
-        arrival: arrivalInfo,
-        airline: airlineInfo,
-        classType: selectedClass!,
-        rating: rating,
-        shareDate: selectedTravelDate!,
-        description: _descriptionController.text.trim(),
-        authorId: "685391a607a87fb45ddc4a5a", // Placeholder - replace with actual user ID
-        imagePaths: _selectedImages.isNotEmpty 
-            ? _selectedImages.map((file) => file.path).toList() 
-            : null,
-      ));
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error sharing experience: $e')),
+      context.read<PostBloc>().add(
+        ShareExperience(
+          departure: departureInfo,
+          arrival: arrivalInfo,
+          airline: airlineInfo,
+          classType: selectedClass!,
+          rating: rating,
+          shareDate: selectedTravelDate!,
+          description: _descriptionController.text.trim(),
+          authorId:
+              "685391a607a87fb45ddc4a5a", // Placeholder - replace with actual user ID
+          imagePaths: _selectedImages.isNotEmpty
+              ? _selectedImages.map((file) => file.path).toList()
+              : null,
+        ),
       );
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error sharing experience: $e')));
     }
   }
 
@@ -631,10 +646,11 @@ class _ShareExperienceModalState extends State<ShareExperienceModal> {
   }
 
   void _showValidationError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
+
   Map<String, dynamic> _getAirportInfo(String airportDisplay) {
     // Find the airport data from our list
     final airportData = airports.firstWhere(
@@ -644,10 +660,10 @@ class _ShareExperienceModalState extends State<ShareExperienceModal> {
         'iata': 'XXX',
         'name': 'Unknown Airport',
         'city': 'Unknown',
-        'country': 'Unknown'
+        'country': 'Unknown',
       },
     );
-    
+
     return {
       "city": airportData['city']!,
       "country": airportData['country']!,
@@ -664,10 +680,10 @@ class _ShareExperienceModalState extends State<ShareExperienceModal> {
         'display': airlineDisplay,
         'name': airlineDisplay,
         'code': 'XX',
-        'country': 'Unknown'
+        'country': 'Unknown',
       },
     );
-    
+
     return {
       "name": airlineData['name']!,
       "code": airlineData['code']!,

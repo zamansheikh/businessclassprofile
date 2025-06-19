@@ -112,7 +112,10 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     }
   }
 
-  Future<void> _onShareExperience(ShareExperience event, Emitter<PostState> emit) async {
+  Future<void> _onShareExperience(
+    ShareExperience event,
+    Emitter<PostState> emit,
+  ) async {
     emit(PostSubmitting());
     try {
       await _postRepository.shareExperience(
@@ -126,9 +129,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         authorId: event.authorId,
         imagePaths: event.imagePaths,
       );
-      
+
       emit(const PostSubmitted(message: 'Experience shared successfully!'));
-      
+
       // After successful submission, refresh the posts
       add(RefreshPosts());
     } catch (e) {

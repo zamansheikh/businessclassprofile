@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'share_experience_modal.dart';
 import 'ask_question_modal.dart';
+import '../bloc/post_bloc.dart';
 
 class ActionButtons extends StatelessWidget {
   const ActionButtons({super.key});
@@ -16,9 +18,13 @@ class ActionButtons extends StatelessWidget {
               text: 'Share Your Experience',
               icon: Icons.rate_review_outlined,
               onTap: () {
+                final postBloc = BlocProvider.of<PostBloc>(context);
                 showDialog(
                   context: context,
-                  builder: (context) => const ShareExperienceModal(),
+                  builder: (dialogContext) => BlocProvider.value(
+                    value: postBloc,
+                    child: const ShareExperienceModal(),
+                  ),
                 );
               },
             ),
@@ -29,9 +35,13 @@ class ActionButtons extends StatelessWidget {
               text: 'Ask A Question',
               icon: Icons.help_outline,
               onTap: () {
+                final postBloc = BlocProvider.of<PostBloc>(context);
                 showDialog(
                   context: context,
-                  builder: (context) => const AskQuestionModal(),
+                  builder: (dialogContext) => BlocProvider.value(
+                    value: postBloc,
+                    child: const AskQuestionModal(),
+                  ),
                 );
               },
             ),

@@ -63,14 +63,14 @@ class ShareExperience extends PostEvent {
 
   @override
   List<Object?> get props => [
-        departure,
-        arrival,
-        airline,
-        classType,
-        rating,
-        shareDate,
-        description,
-        authorId,
-        imagePaths,
-      ];
+    departure,
+    arrival,
+    airline,
+    classType,
+    rating,
+    shareDate,
+    description,
+    authorId,
+    imagePaths,
+  ];
 }
